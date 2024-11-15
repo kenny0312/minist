@@ -1,0 +1,19 @@
+import torch
+from model.cnn_model import CNN
+from dataset.mnist_loader import load_mnist_data
+
+# 加载数据
+_, test_data = load_mnist_data(batch_size=50)
+
+# 加载模型
+cnn = CNN()
+cnn.load_state_dict(torch.load('./checkpoints/cnn2.pkl'))
+cnn.eval()
+
+# 测试模型
+test_x = test_data.data.type(torch.FloatTensor)[:50] / 255.
+test_x = torch.unsqueeze(test_x, dim=1)
+
+test_output = cnn(test_x)
+pred_y = torch.max(test_output, 1)[1].detach().numpy()
+print(pred_y, 'prediction number')
